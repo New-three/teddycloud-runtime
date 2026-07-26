@@ -1,0 +1,44 @@
+name: Publish v0.5.6 once
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-v0.5.6.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Remove one-time workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/publish-v0.5.6.yml
+          git commit -m "Remove one-time release workflow"
+          git push origin HEAD:main
+
+      - name: Publish v0.5.6
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_sha="$(git rev-parse HEAD)"
+          git tag v0.5.6 "$release_sha"
+          git push origin refs/tags/v0.5.6
+          gh release create v0.5.6 \
+            --repo "${{ github.repository }}" \
+            --target "$release_sha" \
+            --title "TeddyCloud Runtime v0.5.6" \
+            --notes "Bereinigte Veröffentlichung der TeddyCloud-Runtime-Integration für Home Assistant."
