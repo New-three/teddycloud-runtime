@@ -1,0 +1,176 @@
+{
+  "title": "TeddyCloud Runtime",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect TeddyCloud",
+        "description": "Connect Home Assistant to the local TeddyCloud and assign the existing Toniebox entities.",
+        "data": {
+          "host": "TeddyCloud address",
+          "audio_id_entity": "Current audio ID entity",
+          "playback_entity": "Playback status entity",
+          "tag_entity": "Current tag UID entity"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "TeddyCloud cannot be reached or returned invalid data."
+    },
+    "abort": {
+      "already_configured": "This TeddyCloud is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Manage Tonieboxes and Custom Tonies",
+        "menu_options": {
+          "add_box": "Add Toniebox",
+          "edit_box": "Edit Toniebox",
+          "remove_box": "Remove Toniebox",
+          "add_rule": "Add Custom Tonie rule",
+          "edit_rule": "Edit Custom Tonie rule",
+          "remove_rule": "Remove Custom Tonie rule"
+        }
+      },
+      "add_box": {
+        "title": "Add Toniebox",
+        "data": {
+          "box_name": "Box name",
+          "audio_id_entity": "Current audio ID entity",
+          "playback_entity": "Playback status entity",
+          "tag_entity": "Current tag UID entity"
+        }
+      },
+      "edit_box": {
+        "title": "Select Toniebox",
+        "data": {"box_id": "Toniebox"}
+      },
+      "edit_box_form": {
+        "title": "Edit Toniebox",
+        "data": {
+          "box_name": "Box name",
+          "audio_id_entity": "Current audio ID entity",
+          "playback_entity": "Playback status entity",
+          "tag_entity": "Current tag UID entity"
+        }
+      },
+      "remove_box": {
+        "title": "Remove Toniebox",
+        "data": {"box_id": "Toniebox to remove"}
+      },
+      "add_rule": {
+        "title": "Add Custom Tonie rule",
+        "description": "Assign all episodes of one TeddyCloud series to a Custom Tonie.",
+        "data": {
+          "rule_name": "Custom Tonie name",
+          "tonie_uid": "Custom Tonie UID",
+          "series": "TeddyCloud series"
+        },
+        "data_description": {
+          "tonie_uid": "Eight hexadecimal bytes separated by colons.",
+          "series": "The exact series name from TeddyCloud metadata."
+        }
+      },
+      "edit_rule": {
+        "title": "Select Custom Tonie rule",
+        "data": {"rule_id": "Custom Tonie rule"}
+      },
+      "edit_rule_form": {
+        "title": "Edit Custom Tonie rule",
+        "data": {
+          "rule_name": "Custom Tonie name",
+          "tonie_uid": "Custom Tonie UID",
+          "series": "TeddyCloud series"
+        },
+        "data_description": {
+          "tonie_uid": "Eight hexadecimal bytes separated by colons.",
+          "series": "The exact series name from TeddyCloud metadata"
+        }
+      },
+      "remove_rule": {
+        "title": "Remove Custom Tonie rule",
+        "data": {"rule_id": "Rule to remove"}
+      }
+    },
+    "error": {
+      "entities_already_used": "At least one entity is already assigned to another Toniebox.",
+      "invalid_uid": "The UID must contain exactly eight hexadecimal bytes.",
+      "uid_already_used": "A rule already exists for this Custom Tonie.",
+      "series_required": "Enter a series name."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "episode": {"name": "Episode"},
+      "series": {"name": "Series"},
+      "audio_id": {"name": "Audio ID"},
+      "runtime": {"name": "Total runtime"},
+      "current_ruid": {"name": "Current RUID"},
+      "track_count": {"name": "Track count"},
+      "elapsed": {"name": "Elapsed time"},
+      "remaining": {"name": "Remaining time"},
+      "progress": {"name": "Progress"},
+      "playback_status": {"name": "Playback status"},
+      "next_episode": {"name": "Next episode"},
+      "cache_state": {"name": "Cache state"},
+      "library_count": {"name": "Known RFID tags"},
+      "custom_episode_count": {"name": "Custom episodes"},
+      "library_audio_count": {"name": "TAF files in library"},
+      "custom_runtime_count": {"name": "Measured custom episodes"},
+      "pending_custom_runtime_count": {"name": "Unmeasured custom episodes"},
+      "cached_runtime_count": {"name": "Cached runtimes"}
+    },
+    "button": {
+      "assign_next_episode": {"name": "Assign next episode"}
+    }
+  },
+  "services": {
+    "reload_library": {
+      "name": "Reload library",
+      "description": "Reload the tag index and custom metadata."
+    },
+    "refresh_runtime": {
+      "name": "Refresh runtime",
+      "description": "Delete one or all cached runtimes and calculate them again.",
+      "fields": {
+        "audio_id": {
+          "name": "Audio ID",
+          "description": "Optional audio ID of a library file."
+        },
+        "ruid": {
+          "name": "RUID",
+          "description": "Alternatively, a linked Tonie RUID. If omitted, all runtimes are recalculated."
+        }
+      }
+    },
+    "clear_cache": {
+      "name": "Clear runtime cache",
+      "description": "Clear the runtime cache and rebuild it from the current library."
+    },
+    "mark_complete": {
+      "name": "Mark episode complete",
+      "description": "Manually complete the current episode and assign the next one.",
+      "fields": {
+        "box_id": {
+          "name": "Box ID",
+          "description": "Internal ID of the configured Toniebox."
+        }
+      }
+    },
+    "reset_progress": {
+      "name": "Reset progress",
+      "description": "Reset elapsed time for the current episode on this box.",
+      "fields": {
+        "box_id": {
+          "name": "Box ID",
+          "description": "Internal ID of the configured Toniebox."
+        }
+      }
+    },
+    "retry_assignment": {
+      "name": "Retry assignment",
+      "description": "Retry failed TeddyCloud assignments for the next episode."
+    }
+  }
+}

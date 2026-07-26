@@ -1,0 +1,13 @@
+{
+  "domain": "teddycloud_runtime",
+  "name": "TeddyCloud Runtime",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/New-three/teddycloud-runtime",
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/New-three/teddycloud-runtime/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.5.6"
+}

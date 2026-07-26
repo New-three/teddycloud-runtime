@@ -1,0 +1,34 @@
+reload_library:
+
+refresh_runtime:
+  fields:
+    audio_id:
+      required: false
+      example: "123456789"
+      selector:
+        text:
+    ruid:
+      required: false
+      example: "aabbccddeeff0011"
+      selector:
+        text:
+
+clear_cache:
+
+mark_complete:
+  fields:
+    box_id:
+      required: true
+      example: "toniebox_1"
+      selector:
+        text:
+
+reset_progress:
+  fields:
+    box_id:
+      required: true
+      example: "toniebox_1"
+      selector:
+        text:
+
+retry_assignment:

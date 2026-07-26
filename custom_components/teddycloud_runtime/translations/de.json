@@ -1,0 +1,185 @@
+{
+  "title": "TeddyCloud Laufzeiten",
+  "config": {
+    "step": {
+      "user": {
+        "title": "TeddyCloud verbinden",
+        "description": "Verbindet Home Assistant mit der lokalen TeddyCloud und ordnet die vorhandenen Toniebox-Entitäten zu.",
+        "data": {
+          "host": "TeddyCloud-Adresse",
+          "audio_id_entity": "Entität der aktuellen Audio-ID",
+          "playback_entity": "Entität des Wiedergabestatus",
+          "tag_entity": "Entität der aktuellen Tag-UID"
+        },
+        "data_description": {
+          "host": "Vollständige Adresse der lokalen TeddyCloud.",
+          "audio_id_entity": "Sensor mit der aktuell abgespielten Audio-ID.",
+          "playback_entity": "Sensor mit dem Wiedergabestatus der Toniebox.",
+          "tag_entity": "Sensor mit der UID des aktuell aufgelegten Tonies."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "TeddyCloud ist nicht erreichbar oder lieferte ungültige Daten."
+    },
+    "abort": {
+      "already_configured": "Diese TeddyCloud ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tonieboxen und Custom-Tonies verwalten",
+        "menu_options": {
+          "add_box": "Toniebox hinzufügen",
+          "edit_box": "Toniebox bearbeiten",
+          "remove_box": "Toniebox entfernen",
+          "add_rule": "Custom-Tonie-Regel hinzufügen",
+          "edit_rule": "Custom-Tonie-Regel bearbeiten",
+          "remove_rule": "Custom-Tonie-Regel entfernen"
+        }
+      },
+      "add_box": {
+        "title": "Toniebox hinzufügen",
+        "description": "Ordne die drei vorhandenen Home-Assistant-Sensoren dieser Box zu.",
+        "data": {
+          "box_name": "Name der Box",
+          "audio_id_entity": "Entität der aktuellen Audio-ID",
+          "playback_entity": "Entität des Wiedergabestatus",
+          "tag_entity": "Entität der aktuellen Tag-UID"
+        }
+      },
+      "edit_box": {
+        "title": "Toniebox zum Bearbeiten auswählen",
+        "data": {"box_id": "Toniebox"}
+      },
+      "edit_box_form": {
+        "title": "Toniebox bearbeiten",
+        "data": {
+          "box_name": "Name der Box",
+          "audio_id_entity": "Entität der aktuellen Audio-ID",
+          "playback_entity": "Entität des Wiedergabestatus",
+          "tag_entity": "Entität der aktuellen Tag-UID"
+        }
+      },
+      "remove_box": {
+        "title": "Toniebox entfernen",
+        "description": "Die TeddyCloud-Bibliothek und gespeicherten Laufzeiten bleiben erhalten.",
+        "data": {"box_id": "Zu entfernende Toniebox"}
+      },
+      "add_rule": {
+        "title": "Custom-Tonie-Regel hinzufügen",
+        "description": "Ordnet einem Custom-Tonie alle Folgen einer Serie zu. Der Serienname muss exakt den TeddyCloud-Metadaten entsprechen.",
+        "data": {
+          "rule_name": "Name des Custom-Tonies",
+          "tonie_uid": "UID des Custom-Tonies",
+          "series": "Serie/Bibliothek"
+        },
+        "data_description": {
+          "tonie_uid": "Acht hexadezimale Bytes, durch Doppelpunkte getrennt.",
+          "series": "Der exakte Serienname aus den TeddyCloud-Metadaten."
+        }
+      },
+      "edit_rule": {
+        "title": "Custom-Tonie-Regel auswählen",
+        "data": {"rule_id": "Custom-Tonie-Regel"}
+      },
+      "edit_rule_form": {
+        "title": "Custom-Tonie-Regel bearbeiten",
+        "data": {
+          "rule_name": "Name des Custom-Tonies",
+          "tonie_uid": "UID des Custom-Tonies",
+          "series": "Serie/Bibliothek"
+        },
+        "data_description": {
+          "tonie_uid": "Acht hexadezimale Bytes, durch Doppelpunkte getrennt.",
+          "series": "Der exakte Serienname aus den TeddyCloud-Metadaten"
+        }
+      },
+      "remove_rule": {
+        "title": "Custom-Tonie-Regel entfernen",
+        "description": "Der Tonie und seine Dateien werden nicht gelöscht. Nur die automatische Zuordnung endet.",
+        "data": {"rule_id": "Zu entfernende Regel"}
+      }
+    },
+    "error": {
+      "entities_already_used": "Mindestens eine dieser Entitäten gehört bereits zu einer anderen Toniebox.",
+      "invalid_uid": "Die UID muss genau acht Hexadezimal-Bytes enthalten.",
+      "uid_already_used": "Für diesen Custom-Tonie existiert bereits eine Regel.",
+      "series_required": "Bitte gib einen Seriennamen ein."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "episode": {"name": "Folge"},
+      "series": {"name": "Serie"},
+      "audio_id": {"name": "Audio-ID"},
+      "runtime": {"name": "Gesamtlaufzeit"},
+      "current_ruid": {"name": "Aktuelle RUID"},
+      "track_count": {"name": "Kapitelanzahl"},
+      "elapsed": {"name": "Abgespielte Zeit"},
+      "remaining": {"name": "Verbleibende Zeit"},
+      "progress": {"name": "Fortschritt"},
+      "playback_status": {"name": "Wiedergabestatus"},
+      "next_episode": {"name": "Nächste Folge"},
+      "cache_state": {"name": "Cache-Status"},
+      "library_count": {"name": "Bekannte RFID-Tags"},
+      "custom_episode_count": {"name": "Custom-Folgen"},
+      "library_audio_count": {"name": "TAF-Dateien in der Bibliothek"},
+      "custom_runtime_count": {"name": "Vermessene Custom-Folgen"},
+      "pending_custom_runtime_count": {"name": "Noch nicht vermessene Custom-Folgen"},
+      "cached_runtime_count": {"name": "Gespeicherte Laufzeiten"}
+    },
+    "button": {
+      "assign_next_episode": {"name": "Nächste Folge zuweisen"}
+    }
+  },
+  "services": {
+    "reload_library": {
+      "name": "Bibliothek neu laden",
+      "description": "Liest Tag-Index und Custom-Metadaten erneut ein."
+    },
+    "refresh_runtime": {
+      "name": "Laufzeit neu berechnen",
+      "description": "Löscht eine oder alle gespeicherten Laufzeiten und berechnet sie erneut.",
+      "fields": {
+        "audio_id": {
+          "name": "Audio-ID",
+          "description": "Optionale Audio-ID einer Bibliotheksdatei."
+        },
+        "ruid": {
+          "name": "RUID",
+          "description": "Alternativ die RUID eines zugeordneten Tonies. Ohne Kennung werden alle Laufzeiten neu berechnet."
+        }
+      }
+    },
+    "clear_cache": {
+      "name": "Laufzeit-Cache leeren",
+      "description": "Leert den Laufzeit-Cache und baut ihn aus der aktuellen Bibliothek neu auf."
+    },
+    "mark_complete": {
+      "name": "Folge als gehört markieren",
+      "description": "Schließt die aktuell auf einer Box erkannte Folge manuell ab und ordnet die nächste zu.",
+      "fields": {
+        "box_id": {
+          "name": "Box-ID",
+          "description": "Interne ID der konfigurierten Toniebox."
+        }
+      }
+    },
+    "reset_progress": {
+      "name": "Fortschritt zurücksetzen",
+      "description": "Setzt die abgespielte Zeit der aktuellen Folge auf dieser Box auf null.",
+      "fields": {
+        "box_id": {
+          "name": "Box-ID",
+          "description": "Interne ID der konfigurierten Toniebox."
+        }
+      }
+    },
+    "retry_assignment": {
+      "name": "Zuweisung erneut versuchen",
+      "description": "Wiederholt fehlgeschlagene Zuweisungen der nächsten Folge in TeddyCloud."
+    }
+  }
+}
