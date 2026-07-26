@@ -1,162 +1,162 @@
 # TeddyCloud Runtime
 
-Home-Assistant-Custom-Integration fÃ¼r lokale TeddyCloud-Installationen.
+Home-Assistant-Custom-Integration für lokale TeddyCloud-Installationen.
 
 ## Funktionen
 
-- Einrichtung Ã¼ber die Home-Assistant-OberflÃ¤che
-- UnterstÃ¼tzung mehrerer Tonieboxen
+- Einrichtung über die Home-Assistant-Oberfläche
+- Unterstützung mehrerer Tonieboxen
 - Frei konfigurierbare Regeln aus Custom-Tonie und TeddyCloud-Serie
-- Rekursives Einlesen der vollstÃ¤ndigen TAF-Bibliothek
+- Rekursives Einlesen der vollständigen TAF-Bibliothek
 - Exakte Laufzeitbestimmung aus Ogg/Opus-Daten
 - Persistenter Laufzeit- und Wiedergabefortschritt
 - Eigener Timer je Box, RUID, Audio-ID und Zufallsrunde
 - Automatischer Folgenabschluss, sobald eine Box die Gesamtlaufzeit erreicht
-- ZufÃ¤llige Folgenauswahl ohne Wiederholung innerhalb einer Runde
-- Automatische Zuweisung der nÃ¤chsten TAF-Datei in TeddyCloud
+- Zufällige Folgenauswahl ohne Wiederholung innerhalb einer Runde
+- Automatische Zuweisung der nächsten TAF-Datei in TeddyCloud
 - Sofortige Erstzuweisung, wenn ein konfigurierter Tonie noch eine Datei aus
-  einer anderen Serie enthÃ¤lt
+  einer anderen Serie enthält
 
 ## Voraussetzungen und Datenquelle
 
 TeddyCloud muss bereits mit einem MQTT-Broker verbunden sein. Die
-Toniebox-Datenpunkte werden von TeddyCloud Ã¼ber MQTT Ã¼bertragen und durch die
-MQTT-Integration in Home Assistant als EntitÃ¤ten bereitgestellt.
+Toniebox-Datenpunkte werden von TeddyCloud über MQTT übertragen und durch die
+MQTT-Integration in Home Assistant als Entitäten bereitgestellt.
 
-TeddyCloud Runtime erzeugt diese Toniebox-EntitÃ¤ten nicht selbst und verbindet
+TeddyCloud Runtime erzeugt diese Toniebox-Entitäten nicht selbst und verbindet
 sich auch nicht direkt mit den Tonieboxen. Die Integration verwendet die
-bereits in Home Assistant vorhandenen MQTT-EntitÃ¤ten fÃ¼r:
+bereits in Home Assistant vorhandenen MQTT-Entitäten für:
 
 - aktuelle Audio-ID
 - Wiedergabestatus
 - aktuelle Tag-UID
 
-ZusÃ¤tzlich greift TeddyCloud Runtime Ã¼ber die konfigurierte lokale
+Zusätzlich greift TeddyCloud Runtime über die konfigurierte lokale
 TeddyCloud-Adresse auf Bibliothek, Metadaten und TAF-Dateien zu. Vor der
-Einrichtung mÃ¼ssen die benÃ¶tigten Toniebox-EntitÃ¤ten deshalb unter
-**Einstellungen â†’ GerÃ¤te & Dienste â†’ MQTT** in Home Assistant vorhanden sein.
+Einrichtung müssen die benötigten Toniebox-Entitäten deshalb unter
+**Einstellungen → Geräte & Dienste → MQTT** in Home Assistant vorhanden sein.
 
-## Installation Ã¼ber HACS
+## Installation über HACS
 
 Das Repository ist derzeit nicht im offiziellen HACS-Standardkatalog
-enthalten. Es kann aber als benutzerdefiniertes Repository hinzugefÃ¼gt werden:
+enthalten. Es kann aber als benutzerdefiniertes Repository hinzugefügt werden:
 
-1. HACS in Home Assistant Ã¶ffnen.
-2. **Integrationen** auswÃ¤hlen.
-3. Oben rechts das MenÃ¼ mit den drei Punkten Ã¶ffnen.
-4. **Benutzerdefinierte Repositories** auswÃ¤hlen.
+1. HACS in Home Assistant öffnen.
+2. **Integrationen** auswählen.
+3. Oben rechts das Menü mit den drei Punkten öffnen.
+4. **Benutzerdefinierte Repositories** auswählen.
 5. Als Repository
    `https://github.com/New-three/teddycloud-runtime` eintragen.
-6. Als Kategorie **Integration** auswÃ¤hlen und mit **HinzufÃ¼gen** bestÃ¤tigen.
+6. Als Kategorie **Integration** auswählen und mit **Hinzufügen** bestätigen.
 7. In HACS nach **TeddyCloud Runtime** suchen und die Integration
    herunterladen.
-8. Home Assistant vollstÃ¤ndig neu starten.
-9. **Einstellungen â†’ GerÃ¤te & Dienste â†’ Integration hinzufÃ¼gen** Ã¶ffnen und
+8. Home Assistant vollständig neu starten.
+9. **Einstellungen → Geräte & Dienste → Integration hinzufügen** öffnen und
    nach **TeddyCloud Runtime** suchen.
 
-FÃ¼r diese Installationsart muss HACS bereits in Home Assistant eingerichtet
+Für diese Installationsart muss HACS bereits in Home Assistant eingerichtet
 sein.
 
 ## Manuelle Installation
 
 1. Den Ordner `custom_components/teddycloud_runtime` nach
    `/config/custom_components/teddycloud_runtime` kopieren.
-2. Home Assistant vollstÃ¤ndig neu starten.
-3. **Einstellungen â†’ GerÃ¤te & Dienste â†’ Integration hinzufÃ¼gen** Ã¶ffnen.
+2. Home Assistant vollständig neu starten.
+3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** öffnen.
 4. Nach **TeddyCloud Runtime** suchen.
-5. TeddyCloud-Adresse und die drei Sensoren der ersten Toniebox auswÃ¤hlen.
+5. TeddyCloud-Adresse und die drei Sensoren der ersten Toniebox auswählen.
 
-Die Beschreibung enthÃ¤lt bewusst keine Beispiel-IP. Verwendet wird immer die
+Die Beschreibung enthält bewusst keine Beispiel-IP. Verwendet wird immer die
 Adresse der eigenen lokalen TeddyCloud.
 
-Beim ersten Start analysiert die Integration alle gÃ¼ltigen TAF-Dateien der
-Bibliothek. Dabei werden nur kleine HTTP-Bereiche der Audiodateien Ã¼bertragen.
+Beim ersten Start analysiert die Integration alle gültigen TAF-Dateien der
+Bibliothek. Dabei werden nur kleine HTTP-Bereiche der Audiodateien übertragen.
 Die ermittelten Laufzeiten werden dauerhaft in Home Assistant gespeichert.
 
 ## Tonieboxen konfigurieren
 
 Weitere Boxen werden unter
-**Einstellungen â†’ GerÃ¤te & Dienste â†’ TeddyCloud Runtime â†’ Konfigurieren**
-hinzugefÃ¼gt. FÃ¼r jede Box werden folgende Werte benÃ¶tigt:
+**Einstellungen → Geräte & Dienste → TeddyCloud Runtime → Konfigurieren**
+hinzugefügt. Für jede Box werden folgende Werte benötigt:
 
-- frei wÃ¤hlbarer Boxname
+- frei wählbarer Boxname
 - Sensor der aktuellen Audio-ID
 - Sensor des Wiedergabestatus
 - Sensor der aktuellen Tag-UID
 
 ## Custom-Tonie-Regeln
 
-Die Integration enthÃ¤lt keine voreingestellten Tonies oder Serien. Regeln
-werden Ã¼ber **Konfigurieren â†’ Custom-Tonie-Regel hinzufÃ¼gen** angelegt.
+Die Integration enthält keine voreingestellten Tonies oder Serien. Regeln
+werden über **Konfigurieren → Custom-Tonie-Regel hinzufügen** angelegt.
 
 Jede Regel besteht aus:
 
-- frei wÃ¤hlbarer Regelname
+- frei wählbarer Regelname
 - UID des physischen Custom-Tonies
 - exakter Serienname aus den TeddyCloud-Custom-Metadaten
 
-Neue Bibliotheksdateien mit demselben Seriennamen werden beim nÃ¤chsten
+Neue Bibliotheksdateien mit demselben Seriennamen werden beim nächsten
 Einlesen automatisch in die Zufallsauswahl aufgenommen.
 
-### Beispiel fÃ¼r eine Serienregel
+### Beispiel für eine Serienregel
 
 Dieses Beispiel ist keine Voreinstellung. Die Regel muss vom Nutzer selbst
-angelegt und mit der UID des eigenen Custom-Tonies ausgefÃ¼llt werden.
+angelegt und mit der UID des eigenen Custom-Tonies ausgefüllt werden.
 
-1. **Einstellungen â†’ GerÃ¤te & Dienste â†’ TeddyCloud Runtime â†’
-   Konfigurieren** Ã¶ffnen.
-2. **Custom-Tonie-Regel hinzufÃ¼gen** auswÃ¤hlen.
-3. Die Felder beispielsweise so ausfÃ¼llen:
+1. **Einstellungen → Geräte & Dienste → TeddyCloud Runtime →
+   Konfigurieren** öffnen.
+2. **Custom-Tonie-Regel hinzufügen** auswählen.
+3. Die Felder beispielsweise so ausfüllen:
 
    - Name: `Meine Serien-Zufallswiedergabe`
    - Tonie-UID: `AA:BB:CC:DD:EE:FF:00:11`
    - Serie: `Meine Beispielserie`
 
-4. Die Beispiel-UID durch die tatsÃ¤chliche UID des eigenen Custom-Tonies
+4. Die Beispiel-UID durch die tatsächliche UID des eigenen Custom-Tonies
    ersetzen.
 5. Speichern und den Tonie auf eine konfigurierte Toniebox stellen.
 
 Der Serienname muss exakt so geschrieben sein, wie er in den
-TeddyCloud-Custom-Metadaten steht. Die Integration nimmt anschlieÃŸend alle
-vorhandenen und spÃ¤ter ergÃ¤nzten Custom-Folgen dieser Serie in die
+TeddyCloud-Custom-Metadaten steht. Die Integration nimmt anschließend alle
+vorhandenen und später ergänzten Custom-Folgen dieser Serie in die
 Zufallsauswahl auf.
 
 ## Wiedergabeverhalten
 
 `Playback=OFF` pausiert den Timer der betreffenden Box. Sobald eine Box die
-vollstÃ¤ndige Laufzeit erreicht, gilt die Folge fÃ¼r den Custom-Tonie global als
-beendet. Die Integration weist ihm danach die nÃ¤chste Folge zu.
+vollständige Laufzeit erreicht, gilt die Folge für den Custom-Tonie global als
+beendet. Die Integration weist ihm danach die nächste Folge zu.
 
-Die laufende Wiedergabe wird nicht unterbrochen. Die Toniebox lÃ¤dt die neue
-Zuordnung beim erneuten Auflegen und dem dafÃ¼r vorgesehenen langen Ohrdruck.
+Die laufende Wiedergabe wird nicht unterbrochen. Die Toniebox lädt die neue
+Zuordnung beim erneuten Auflegen und dem dafür vorgesehenen langen Ohrdruck.
 
-Nach jeder vollstÃ¤ndig durchlaufenen Zufallsrunde wird eine neue Reihenfolge
+Nach jeder vollständig durchlaufenen Zufallsrunde wird eine neue Reihenfolge
 erzeugt.
 
 ### Verhalten bei einem Home-Assistant-Neustart
 
 Die aktive Folge, RUID, Audio-ID, Zufallsrunde und abgespielte Zeit werden
-dauerhaft gespeichert. Sind die MQTT-EntitÃ¤ten nach einem Neustart noch nicht
-verfÃ¼gbar, bleibt der letzte bekannte Stand sichtbar und der
+dauerhaft gespeichert. Sind die MQTT-Entitäten nach einem Neustart noch nicht
+verfügbar, bleibt der letzte bekannte Stand sichtbar und der
 Wiedergabestatus lautet `waiting_for_mqtt`.
 
-WÃ¤hrend dieses Wartezustands wird der Timer angehalten. Es wird keine Folge
+Während dieses Wartezustands wird der Timer angehalten. Es wird keine Folge
 automatisch abgeschlossen oder neu zugewiesen. Sobald dieselbe RUID und
-Audio-ID wieder vorliegen und MQTT eine aktive Wiedergabe meldet, lÃ¤uft der
-Timer am gespeicherten Stand weiter. Die Zeit wÃ¤hrend des Neustarts wird nicht
-mitgezÃ¤hlt.
+Audio-ID wieder vorliegen und MQTT eine aktive Wiedergabe meldet, läuft der
+Timer am gespeicherten Stand weiter. Die Zeit während des Neustarts wird nicht
+mitgezählt.
 
-### Bekannte EinschrÃ¤nkung des Timers
+### Bekannte Einschränkung des Timers
 
-Der Timer zÃ¤hlt die Zeit, in der Home Assistant die Wiedergabe als aktiv
-meldet. Die tatsÃ¤chliche Abspielposition innerhalb einer TAF-Datei wird von
+Der Timer zählt die Zeit, in der Home Assistant die Wiedergabe als aktiv
+meldet. Die tatsächliche Abspielposition innerhalb einer TAF-Datei wird von
 den verwendeten Toniebox-Sensoren nicht bereitgestellt.
 
-Werden Kapitel oder Teile einer Folge Ã¼bersprungen oder wird innerhalb der
-Folge vor- beziehungsweise zurÃ¼ckgespult, kann der berechnete Fortschritt
-deshalb von der tatsÃ¤chlichen Abspielposition abweichen. Dadurch kann die
-nÃ¤chste Folge zu frÃ¼h oder zu spÃ¤t zugewiesen werden. Bei normaler Wiedergabe
-ohne hÃ¤ufiges Springen arbeitet der Timer wie vorgesehen.
+Werden Kapitel oder Teile einer Folge übersprungen oder wird innerhalb der
+Folge vor- beziehungsweise zurückgespult, kann der berechnete Fortschritt
+deshalb von der tatsächlichen Abspielposition abweichen. Dadurch kann die
+nächste Folge zu früh oder zu spät zugewiesen werden. Bei normaler Wiedergabe
+ohne häufiges Springen arbeitet der Timer wie vorgesehen.
 
 ## Sensoren
 
@@ -165,14 +165,14 @@ ohne hÃ¤ufiges Springen arbeitet der Timer wie vorgesehen.
 - Gesamtlaufzeit und Kapitelanzahl
 - abgespielte und verbleibende Zeit
 - Fortschritt und Wiedergabestatus
-- nÃ¤chste zugewiesene Folge
+- nächste zugewiesene Folge
 - Cache- und Bibliotheksstatus
 
 ## Aktionen
 
-Jede konfigurierte Toniebox besitzt auÃŸerdem den Button
-**NÃ¤chste Folge zuweisen**. Er schlieÃŸt die aktuell gespeicherte Folge manuell
-ab und weist dem Custom-Tonie sofort die nÃ¤chste Folge seiner Zufallsrunde zu.
+Jede konfigurierte Toniebox besitzt außerdem den Button
+**Nächste Folge zuweisen**. Er schließt die aktuell gespeicherte Folge manuell
+ab und weist dem Custom-Tonie sofort die nächste Folge seiner Zufallsrunde zu.
 Der Button funktioniert auch mit einer nach einem Neustart
 wiederhergestellten Sitzung.
 
@@ -187,8 +187,8 @@ wiederhergestellten Sitzung.
 
 Bei Problemen:
 
-1. Erreichbarkeit der konfigurierten TeddyCloud-Adresse prÃ¼fen.
-2. Unter **Einstellungen â†’ System â†’ Protokolle** nach
+1. Erreichbarkeit der konfigurierten TeddyCloud-Adresse prüfen.
+2. Unter **Einstellungen → System → Protokolle** nach
    `teddycloud_runtime` suchen.
-3. Keine PasswÃ¶rter, Tokens oder vollstÃ¤ndigen Diagnosearchive Ã¶ffentlich
+3. Keine Passwörter, Tokens oder vollständigen Diagnosearchive öffentlich
    teilen.
