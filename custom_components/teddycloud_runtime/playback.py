@@ -60,6 +60,7 @@ class PlaybackManager:
         self.progress: dict[str, float] = {}
         self.queues: dict[str, dict[str, Any]] = {}
         self.active: dict[str, dict[str, Any]] = {}
+        self.inactive: dict[str, dict[str, Any]] = {}
         self._listeners: list[Callable[[], None]] = []
         self._unsubscribers: list[Callable[[], None]] = []
         self._completion_lock = asyncio.Lock()
@@ -138,15 +139,17 @@ class PlaybackManager:
         """Return current calculated values for one box."""
         active = self.active.get(box_id)
         if active is None:
+            inactive = getattr(self, "inactive", {}).get(box_id, {})
             return {
                 "elapsed": None,
                 "remaining": None,
                 "progress": None,
-                "status": "unknown",
+                "status": str(inactive.get("status", "unknown")),
                 "next_episode": None,
                 "next_audio_id": None,
-                "audio_id": None,
-                "ruid": None,
+                "audio_id": inactive.get("audio_id"),
+                "ruid": inactive.get("ruid"),
+                "can_assign": False,
             }
         runtime = self._runtime(active["audio_id"])
         elapsed = self._elapsed(box_id)
@@ -170,7 +173,12 @@ class PlaybackManager:
             "next_audio_id": next_audio_id,
             "audio_id": active["audio_id"],
             "ruid": active["ruid"],
+            "can_assign": True,
         }
+
+    def can_assign(self, box_id: str) -> bool:
+        """Return whether a configured Custom Tonie is active on the box."""
+        return bool(self.snapshot(box_id).get("can_assign"))
 
     def _restore_active(self, stored: Any) -> None:
         """Restore paused sessions while waiting for live MQTT source states."""
@@ -282,6 +290,8 @@ class PlaybackManager:
         self._notify()
 
     def _sync_box(self, box: dict[str, str]) -> None:
+        if not hasattr(self, "inactive"):
+            self.inactive = {}
         box_id = box[CONF_BOX_ID]
         audio_id, audio_available = self._source_state(
             box[CONF_AUDIO_ID_ENTITY]
@@ -298,7 +308,17 @@ class PlaybackManager:
         if not audio_id or ruid not in self.rules:
             self._pause(box_id)
             self.active.pop(box_id, None)
+            self.inactive[box_id] = {
+                "audio_id": audio_id or None,
+                "ruid": ruid,
+                "status": (
+                    "no_matching_rule"
+                    if audio_id and ruid
+                    else "no_active_tonie"
+                ),
+            }
             return
+        self.inactive.pop(box_id, None)
 
         queue = self.queues.get(ruid, {})
         awaiting_audio_id = str(queue.get("awaiting_audio_id", ""))

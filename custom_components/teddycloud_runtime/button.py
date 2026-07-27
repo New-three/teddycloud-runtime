@@ -58,12 +58,7 @@ class AssignNextEpisodeButton(
     @property
     def available(self) -> bool:
         """Return whether a live or restored session can be completed."""
-        return (
-            self.coordinator.playback.snapshot(
-                self.box[CONF_BOX_ID]
-            ).get("audio_id")
-            is not None
-        )
+        return self.coordinator.playback.can_assign(self.box[CONF_BOX_ID])
 
     async def async_press(self) -> None:
         """Assign the next random episode to this Custom Tonie."""

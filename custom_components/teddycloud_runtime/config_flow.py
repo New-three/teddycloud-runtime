@@ -40,13 +40,19 @@ from .const import (
     DEFAULT_TAG_ENTITY,
     DOMAIN,
 )
-from .rules import configured_rules, normalize_uid, uid_to_ruid, unique_rule_id
+from .rules import (
+    configured_rules,
+    normalize_uid,
+    stored_rules,
+    uid_to_ruid,
+    unique_rule_id,
+)
 
 
 class TeddyCloudRuntimeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a TeddyCloud Runtime config flow."""
 
-    VERSION = 1
+    VERSION = 2
 
     @staticmethod
     @callback
@@ -131,7 +137,12 @@ class TeddyCloudRuntimeOptionsFlow(config_entries.OptionsFlowWithReload):
         return self.async_create_entry(
             data={
                 CONF_BOXES: boxes if boxes is not None else self.boxes,
-                CONF_RULES: rules if rules is not None else self.rules,
+                # A box-only change must never normalize, filter, or erase rules.
+                CONF_RULES: (
+                    rules
+                    if rules is not None
+                    else stored_rules(self.config_entry)
+                ),
             }
         )
 

@@ -12,6 +12,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import TeddyCloudClient
 from .const import (
+    CONF_RULES,
     DOMAIN,
     PLATFORMS,
     SERVICE_CLEAR_CACHE,
@@ -23,6 +24,7 @@ from .const import (
 )
 from .coordinator import TeddyCloudRuntimeCoordinator
 from .playback import PlaybackManager
+from .rules import migrate_rules, stored_rules
 
 SERVICE_REFRESH_SCHEMA = vol.Schema(
     {
@@ -31,6 +33,23 @@ SERVICE_REFRESH_SCHEMA = vol.Schema(
     }
 )
 SERVICE_BOX_SCHEMA = vol.Schema({vol.Required("box_id"): cv.string})
+
+
+async def async_migrate_entry(
+    hass: HomeAssistant, entry: ConfigEntry
+) -> bool:
+    """Migrate legacy Custom-Tonie rules without losing configuration."""
+    if entry.version < 2:
+        options = dict(entry.options)
+        rules = migrate_rules(stored_rules(entry))
+        if rules:
+            options[CONF_RULES] = rules
+        hass.config_entries.async_update_entry(
+            entry,
+            options=options,
+            version=2,
+        )
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
