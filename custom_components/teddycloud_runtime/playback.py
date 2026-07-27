@@ -218,6 +218,12 @@ class PlaybackManager:
 
     async def async_mark_complete(self, box_id: str) -> None:
         """Assign the next episode centrally for the active Custom Tonie."""
+        box = next(
+            (candidate for candidate in self.boxes if candidate[CONF_BOX_ID] == box_id),
+            None,
+        )
+        if box is not None:
+            self._sync_box(box)
         active = self.active.get(box_id)
         if active:
             await self._async_complete(box_id, active)
@@ -258,7 +264,10 @@ class PlaybackManager:
         for box in self.boxes:
             self._sync_box(box)
         for box_id, active in list(self.active.items()):
-            if active.get("source_status") == "waiting_for_mqtt":
+            if active.get("source_status") in {
+                "waiting_for_mqtt",
+                "waiting_for_assignment",
+            }:
                 continue
             # Seed a configured Custom Tonie immediately when it still contains
             # its original audio or audio from a previously selected series.
@@ -292,18 +301,18 @@ class PlaybackManager:
             return
 
         queue = self.queues.get(ruid, {})
-        assigned_audio_id = str(queue.get("next_audio_id", ""))
-        if (
-            assigned_audio_id
-            and queue.get("last_completed") is not None
-            and audio_id != assigned_audio_id
-        ):
+        awaiting_audio_id = str(queue.get("awaiting_audio_id", ""))
+        if awaiting_audio_id and audio_id != awaiting_audio_id:
             self._pause(box_id)
-            if current is None or current.get("ruid") != ruid:
+            cycle = int(queue.get("cycle", 1))
+            identity = (ruid, audio_id, cycle)
+            if current is None or (
+                current["ruid"], current["audio_id"], current["cycle"]
+            ) != identity:
                 current = {
                     "ruid": ruid,
                     "audio_id": audio_id,
-                    "cycle": int(queue.get("cycle", 1)),
+                    "cycle": cycle,
                     "started_at": None,
                     "was_playing": False,
                 }
@@ -311,6 +320,9 @@ class PlaybackManager:
             current["source_status"] = "waiting_for_assignment"
             current["was_playing"] = False
             return
+        if awaiting_audio_id == audio_id:
+            queue.pop("awaiting_audio_id", None)
+            queue["status"] = "ready"
 
         cycle = int(queue.get("cycle", 1))
         identity = (ruid, audio_id, cycle)
@@ -413,6 +425,7 @@ class PlaybackManager:
                 {
                     "last_completed": audio_id,
                     "next_audio_id": next_audio_id,
+                    "awaiting_audio_id": next_audio_id,
                     "pending_assignment": pending,
                     "status": "assigning",
                     "error": None,
